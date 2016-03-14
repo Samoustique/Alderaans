@@ -8,7 +8,7 @@ using System;
 
 public class GameManager : MonoBehaviour {
 
-    public static int gold = 3500;
+    public static int gold = 450;
     public static int life = 5;
     public static List<GameObject> mobsAlive = new List<GameObject>();
     public static Step step;
@@ -204,9 +204,7 @@ public class GameManager : MonoBehaviour {
 
     private void RoundTime()
     {
-		String t = Application.streamingAssetsPath + "/Documents/Spawn.txt";
-		(smallTitle.GetComponent<Text>()).text = t;
-		//(smallTitle.GetComponent<Text>()).text = "Wave " + nbRound;
+		(smallTitle.GetComponent<Text>()).text = "Wave " + nbRound;
         title.SetActive(false);
         //tiltShift.enabled = false;
         smallTitle.SetActive(true);

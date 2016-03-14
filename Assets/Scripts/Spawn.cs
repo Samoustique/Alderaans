@@ -8,10 +8,11 @@ using System;
 
 public class Spawn : MonoBehaviour
 {
-
     public List<GameObject> referenceMobs;
 
     public static List<Dictionary<GameObject, int>> mobsPerRound;
+
+	private List<string> waves;
 
     // Use this for initialization
     void Start()
@@ -19,14 +20,33 @@ public class Spawn : MonoBehaviour
 		LoadMobsPerRound();
     }
 
+	private void TempHardCodeLoading(Dictionary<GameObject, int> round)
+	{
+		waves = new List<string> (new string[] { "200", "310", "232", "342" });
+		foreach (string wave in waves) 
+		{
+			char[] characters = wave.ToCharArray();
+			for(int i = 0 ; i < wave.Length ; ++i)
+			{
+				int val = (int)Char.GetNumericValue(characters[i]);
+				if(val > 0)
+				{
+				   round.Add(referenceMobs[i], val);
+				}
+			}
+			mobsPerRound.Add(round);
+			round = new Dictionary<GameObject, int>();
+		}
+	}
+
 	public void LoadMobsPerRound()
 	{
 		mobsPerRound = new List<Dictionary<GameObject, int>>();
 		Dictionary<GameObject, int> round = new Dictionary<GameObject, int>();
-		try
+		TempHardCodeLoading (round);
+		/*try
 		{
 			string line;
-			String dataPath = Application.streamingAssetsPath + "/Documents/Spawn.txt";
 			StreamReader theReader = new StreamReader(".\\Assets\\Documents\\Spawn.txt", Encoding.Default);
 			using (theReader)
 			{
@@ -55,7 +75,7 @@ public class Spawn : MonoBehaviour
 		catch (System.Exception e)
 		{
 			print("Exception during load");
-		}
+		}*/
 	}
 
     public void SpawnMob(int nbRound)
