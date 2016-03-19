@@ -22,7 +22,7 @@ public class Spawn : MonoBehaviour
 
 	private void TempHardCodeLoading(Dictionary<GameObject, int> round)
 	{
-		waves = new List<string> (new string[] { "200", "310", "232", "342" });
+		waves = new List<string> (new string[] { "223", "310", "232", "342" });
 		foreach (string wave in waves) 
 		{
 			char[] characters = wave.ToCharArray();

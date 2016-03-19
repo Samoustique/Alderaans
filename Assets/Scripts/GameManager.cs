@@ -8,7 +8,7 @@ using System;
 
 public class GameManager : MonoBehaviour {
 
-    public static int gold = 450;
+    public static int gold = 4500;
     public static int life = 5;
     public static List<GameObject> mobsAlive = new List<GameObject>();
     public static Step step;
