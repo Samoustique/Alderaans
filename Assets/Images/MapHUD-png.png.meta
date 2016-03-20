@@ -1,0 +1,365 @@
+fileFormatVersion: 2
+guid: 2e1abe44da8738b438509608b16cb249
+timeCreated: 1458513284
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: TowerBSelected
+    21300002: TowerB
+    21300004: TowerBnot
+    21300006: TowerASelected
+    21300008: TowerA
+    21300010: TowerAnot
+    21300012: btnNoSound
+    21300014: btnSound
+    21300016: MapHUD-png_8
+    21300018: TowerSelection
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: TowerBSelected
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 720
+        width: 79
+        height: 80
+      alignment: 9
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 0, y: 0}
+        - {x: 0, y: -77}
+        - {x: 2, y: -80}
+        - {x: 75, y: -80}
+        - {x: 79, y: -79}
+        - {x: 79, y: 0}
+    - name: TowerB
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 725
+        width: 74
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -32, y: 37.5}
+        - {x: -37, y: 32.5}
+        - {x: -37, y: -33.5}
+        - {x: -31, y: -37.5}
+        - {x: 31, y: -37.5}
+        - {x: 37, y: -30.5}
+        - {x: 37, y: 31.5}
+        - {x: 31, y: 37.5}
+    - name: TowerBnot
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 725
+        width: 76
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -34, y: 37.5}
+        - {x: -38, y: 36.5}
+        - {x: -38, y: -27.5}
+        - {x: -30, y: -37.5}
+        - {x: 33, y: -37.5}
+        - {x: 38, y: -34.5}
+        - {x: 38, y: 37.5}
+    - name: TowerASelected
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 638
+        width: 79
+        height: 82
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -39.5, y: -29}
+        - {x: -33.5, y: -41}
+        - {x: 39.5, y: -41}
+        - {x: 39.5, y: 41}
+        - {x: -36.5, y: 41}
+        - {x: -39.5, y: 37}
+    - name: TowerA
+      rect:
+        serializedVersion: 2
+        x: 79
+        y: 643
+        width: 75
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -37.5, y: 37.5}
+        - {x: -37.5, y: -34.5}
+        - {x: -35.5, y: -37.5}
+        - {x: 37.5, y: -37.5}
+        - {x: 37.5, y: 37.5}
+    - name: TowerAnot
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 643
+        width: 74
+        height: 75
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -32, y: 37.5}
+        - {x: -37, y: 32.5}
+        - {x: -37, y: -33.5}
+        - {x: -31, y: -37.5}
+        - {x: 31, y: -37.5}
+        - {x: 37, y: -30.5}
+        - {x: 37, y: 31.5}
+        - {x: 31, y: 37.5}
+    - name: btnNoSound
+      rect:
+        serializedVersion: 2
+        x: 231
+        y: 764
+        width: 33
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8.5, y: 16}
+        - {x: -16.5, y: 10}
+        - {x: -16.5, y: -6}
+        - {x: -9.5, y: -14}
+        - {x: -4.5, y: -16}
+        - {x: 1.5, y: -16}
+        - {x: 1.5, y: 16}
+    - name: btnSound
+      rect:
+        serializedVersion: 2
+        x: 232
+        y: 726
+        width: 33
+        height: 32
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -8.5, y: 16}
+        - {x: -16.5, y: 12}
+        - {x: -16.5, y: -13}
+        - {x: -9.5, y: -16}
+        - {x: 15.5, y: -16}
+        - {x: 16.5, y: -15}
+        - {x: 16.5, y: 16}
+    - name: MapHUD-png_8
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 464
+        width: 366
+        height: 336
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 158, y: -160}
+        - {x: 163, y: -156}
+        - {x: 169, y: -156}
+        - {x: 174, y: -152}
+        - {x: 174, y: -150}
+        - {x: 179, y: -150}
+        - {x: 183, y: -147}
+        - {x: 183, y: 149}
+        - {x: 182, y: 151}
+        - {x: 179, y: 152}
+        - {x: 174, y: 152}
+        - {x: 174, y: 154}
+        - {x: 172, y: 157}
+        - {x: 169, y: 158}
+        - {x: 163, y: 158}
+        - {x: 158, y: 162}
+        - {x: 150, y: 162}
+        - {x: 150, y: 166}
+        - {x: 149, y: 168}
+        - {x: -148, y: 168}
+        - {x: -150, y: 166}
+        - {x: -150, y: 162}
+        - {x: -158, y: 162}
+        - {x: -163, y: 158}
+        - {x: -169, y: 158}
+        - {x: -174, y: 154}
+        - {x: -174, y: 152}
+        - {x: -179, y: 152}
+        - {x: -183, y: 149}
+        - {x: -183, y: -147}
+        - {x: -182, y: -149}
+        - {x: -179, y: -150}
+        - {x: -174, y: -150}
+        - {x: -174, y: -152}
+        - {x: -172, y: -155}
+        - {x: -169, y: -156}
+        - {x: -163, y: -156}
+        - {x: -158, y: -160}
+        - {x: -150, y: -160}
+        - {x: -150, y: -164}
+        - {x: -148, y: -166}
+        - {x: -147, y: -166}
+        - {x: -145, y: -168}
+        - {x: 145, y: -168}
+        - {x: 150, y: -164}
+        - {x: 150, y: -160}
+    - name: TowerSelection
+      rect:
+        serializedVersion: 2
+        x: 660
+        y: 440
+        width: 140
+        height: 360
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 23, y: -174}
+        - {x: 21, y: -176}
+        - {x: 21, y: -178}
+        - {x: 23, y: -180}
+        - {x: 35, y: -180}
+        - {x: 37, y: -178}
+        - {x: 37, y: -176}
+        - {x: 35, y: -174}
+      - - {x: -25, y: -166}
+        - {x: -27, y: -167}
+        - {x: -27, y: -170}
+        - {x: -26, y: -172}
+        - {x: -13, y: -172}
+        - {x: -11, y: -171}
+        - {x: -11, y: -168}
+        - {x: -12, y: -166}
+      - - {x: 52, y: -172}
+        - {x: 68, y: -172}
+        - {x: 68, y: -166}
+        - {x: 52, y: -166}
+      - - {x: -34, y: 172}
+        - {x: -63, y: 152}
+        - {x: -63, y: -124}
+        - {x: -57, y: -148}
+        - {x: 27, y: -166}
+        - {x: 70, y: -166}
+        - {x: 70, y: 172}
+      - - {x: -50, y: -157}
+        - {x: -52, y: -159}
+        - {x: -52, y: -161}
+        - {x: -50, y: -163}
+        - {x: -47, y: -163}
+        - {x: -45, y: -161}
+        - {x: -45, y: -159}
+        - {x: -47, y: -157}
+      - - {x: -34, y: -157}
+        - {x: -35, y: -159}
+        - {x: -35, y: -162}
+        - {x: -33, y: -163}
+        - {x: -25, y: -163}
+        - {x: -24, y: -161}
+        - {x: -24, y: -158}
+        - {x: -26, y: -157}
+      - - {x: -69, y: -111}
+        - {x: -53, y: -111}
+        - {x: -53, y: -105}
+        - {x: -68, y: -105}
+        - {x: -69, y: -107}
+      - - {x: -32, y: 164}
+        - {x: -33, y: 162}
+        - {x: -33, y: 159}
+        - {x: -31, y: 158}
+        - {x: -14, y: 158}
+        - {x: -13, y: 160}
+        - {x: -13, y: 163}
+        - {x: -15, y: 164}
+      - - {x: 7, y: 167}
+        - {x: 5, y: 165}
+        - {x: 5, y: 163}
+        - {x: 7, y: 161}
+        - {x: 12, y: 161}
+        - {x: 14, y: 163}
+        - {x: 14, y: 165}
+        - {x: 12, y: 167}
+      - - {x: -20, y: 172}
+        - {x: -21, y: 171}
+        - {x: -21, y: 166}
+        - {x: 3, y: 166}
+        - {x: 4, y: 167}
+        - {x: 4, y: 172}
+      - - {x: 21, y: 180}
+        - {x: 21, y: 178}
+        - {x: 23, y: 176}
+        - {x: 25, y: 176}
+        - {x: 27, y: 178}
+        - {x: 27, y: 180}
+      - - {x: 29, y: 180}
+        - {x: 29, y: 178}
+        - {x: 31, y: 176}
+        - {x: 44, y: 176}
+        - {x: 46, y: 178}
+        - {x: 46, y: 180}
+      - - {x: 47, y: 180}
+        - {x: 47, y: 178}
+        - {x: 49, y: 176}
+        - {x: 53, y: 176}
+        - {x: 55, y: 178}
+        - {x: 55, y: 180}
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
