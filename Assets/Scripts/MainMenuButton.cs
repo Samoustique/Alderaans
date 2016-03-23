@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public class MainMenu : MonoBehaviour {
+public class MainMenuButton : MonoBehaviour {
 
 	private Animator animator;
 	private GameObject mainCamera;
