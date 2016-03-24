@@ -72,6 +72,9 @@ public class GameManager : MonoBehaviour {
 
 		animator.Play("CameraStartAnim", -1, 0F);
 		startTimer = Time.time;
+
+		//Astar astar = new Astar();
+		//print("astar : " + astar.isWayFree ());
     }
 
     void Update()

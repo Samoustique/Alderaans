@@ -38,17 +38,31 @@ public class Astar {
 
 
 	private MyPathNode[,] grid;
-	private int Width = 10;
-	private int Height = 10;
+	private int width;
+	private int height;
+	private Point departurePoint;
+	private Point arrivalPoint;
+	private SpatialAStar<MyPathNode, Object> aStar;
 
-	void FillGrid ()
+	public Astar(int w, int h, int departureX, int departureY, int arrivalX, int arrivalY)
+	{
+		width = w;
+		height = h;
+		FillGrid ();
+		departurePoint = new Point(departureX, departureY);
+		arrivalPoint = new Point(arrivalX, arrivalY);
+
+		aStar = new SpatialAStar<MyPathNode, Object>(grid); 
+	}
+
+	private void FillGrid ()
 	{
 		// setup grid with walls
-		grid = new MyPathNode[Width, Height];
+		grid = new MyPathNode[width, height];
 
-		for (int x = 0; x < Width; x++)
+		for (int x = 0; x < width; x++)
 		{
-			for (int y = 0; y < Height; y++)
+			for (int y = 0; y < height; y++)
 			{
 				grid[x, y] = new MyPathNode()
 				{
@@ -60,9 +74,13 @@ public class Astar {
 		}  
 	}
 
-	void Search()
+	public void SetGrid(int x, int y, bool isTower)
 	{
-		SpatialAStar<MyPathNode, Object> aStar = new SpatialAStar<MyPathNode, Object>(grid); 
-		LinkedList<MyPathNode> path = aStar.Search(new Point(0, 0), new Point(Width - 2, Height - 2), null);
+		grid [x, y].IsTower = isTower;
+	}
+
+	public bool isWayFree()
+	{
+		return aStar.Search (departurePoint, arrivalPoint, null) != null;
 	}
 }
