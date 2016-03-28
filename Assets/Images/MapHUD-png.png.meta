@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2e1abe44da8738b438509608b16cb249
-timeCreated: 1458588384
+timeCreated: 1459100952
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -17,6 +17,7 @@ TextureImporter:
     21300020: MenuBtnOn
     21300022: MenuBtnOff
     21300024: BigPanelBackground
+    21300026: Logo
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0

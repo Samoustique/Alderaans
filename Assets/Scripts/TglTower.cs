@@ -46,7 +46,7 @@ public class TglTower : MonoBehaviour
     {
         if (GameManager.step == GameManager.Step.CONSTRUCTION)
         {
-            RefreshBuildable(toggle.isOn, towerToBuild, isThereMoneyPb);
+            RefreshBuildable(toggle.isOn, towerToBuild);
         }
         else
         {
@@ -61,25 +61,17 @@ public class TglTower : MonoBehaviour
         }
     }
 
-    /** *********************** REFRESH BUILDABLE  *************************  */
-    public void RefreshBuildable(bool isOn, GameObject towerToBuild, bool isThereMoneyPb)
+    public void RefreshBuildable(bool isOn, GameObject towerToBuild)
     {
-        StartCoroutine(RefreshBuildableCoroutine(isOn, towerToBuild, isThereMoneyPb));
+		foreach (Build build in builds)
+		{
+			if (!build.hasTower)
+			{
+				build.towerToBuild = isOn ? towerToBuild : null;
+				build.NotifyTowerChanged();
+			}
+		}
     }
-
-    private IEnumerator RefreshBuildableCoroutine(bool isOn, GameObject towerToBuild, bool isThereMoneyPb)
-    {
-        foreach (Build build in builds)
-        {
-            if (!build.hasTower)
-            {
-                build.towerToBuild = isOn ? towerToBuild : null;
-                build.NotifyTowerChanged(isOn, isThereMoneyPb);
-                yield return new WaitForSeconds(0.0001F);
-            }
-        }
-    }
-/** *********************** REFRESH BUILDABLE  *************************  */
 
     public void enable()
     {

@@ -42,7 +42,7 @@ namespace SettlersEngine
     /// <summary>
     /// Uses about 50 MB for a 1024x1024 grid.
     /// </summary>
-    public class SpatialAStar<TPathNode, TUserContext> where TPathNode : IPathNode<TUserContext>
+	public class SpatialAStar<TPathNode, TUserContext> where TPathNode : IPathNode<TUserContext>
     {
         private OpenCloseMap m_ClosedSet;
         private OpenCloseMap m_OpenSet;
@@ -154,7 +154,7 @@ namespace SettlersEngine
             if (startNode == endNode)
                 return new LinkedList<TPathNode>(new TPathNode[] { startNode.UserContext });
 
-            PathNode[] neighborNodes = new PathNode[8];
+            PathNode[] neighborNodes = new PathNode[/*8*/4];
 
             m_ClosedSet.Clear();
             m_OpenSet.Clear();
@@ -287,45 +287,45 @@ namespace SettlersEngine
             int x = inAround.X;
             int y = inAround.Y;
 
-            if ((x > 0) && (y > 0))
+            /*if ((x > 0) && (y > 0))
                 inNeighbors[0] = m_SearchSpace[x - 1, y - 1];
             else
-                inNeighbors[0] = null;
+                inNeighbors[0] = null;*/
 
             if (y > 0)
-                inNeighbors[1] = m_SearchSpace[x, y - 1];
+                inNeighbors[0/*1*/] = m_SearchSpace[x, y - 1];
             else
-                inNeighbors[1] = null;
+                inNeighbors[0/*1*/] = null;
 
-            if ((x < Width - 1) && (y > 0))
+            /*if ((x < Width - 1) && (y > 0))
                 inNeighbors[2] = m_SearchSpace[x + 1, y - 1];
             else
-                inNeighbors[2] = null;
+                inNeighbors[2] = null;*/
 
             if (x > 0)
-                inNeighbors[3] = m_SearchSpace[x - 1, y];
+                inNeighbors[1/*3*/] = m_SearchSpace[x - 1, y];
             else
-                inNeighbors[3] = null;
+                inNeighbors[1/*3*/] = null;
 
             if (x < Width - 1)
-                inNeighbors[4] = m_SearchSpace[x + 1, y];
+                inNeighbors[2/*4*/] = m_SearchSpace[x + 1, y];
             else
-                inNeighbors[4] = null;
+                inNeighbors[2/*4*/] = null;
 
-            if ((x > 0) && (y < Height - 1))
+            /*if ((x > 0) && (y < Height - 1))
                 inNeighbors[5] = m_SearchSpace[x - 1, y + 1];
             else
-                inNeighbors[5] = null;
+                inNeighbors[5] = null;*/
 
             if (y < Height - 1)
-                inNeighbors[6] = m_SearchSpace[x, y + 1];
+                inNeighbors[3/*6*/] = m_SearchSpace[x, y + 1];
             else
-                inNeighbors[6] = null;
+                inNeighbors[3/*6*/] = null;
 
-            if ((x < Width - 1) && (y < Height - 1))
+            /*if ((x < Width - 1) && (y < Height - 1))
                 inNeighbors[7] = m_SearchSpace[x + 1, y + 1];
             else
-                inNeighbors[7] = null;
+                inNeighbors[7] = null;*/
         }
 
         private class OpenCloseMap

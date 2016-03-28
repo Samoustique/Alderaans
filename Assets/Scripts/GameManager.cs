@@ -14,6 +14,7 @@ public class GameManager : MonoBehaviour {
     public static Step step;
 
 	public GameObject topCamObject;
+	public AudioClip sellingSound;
     public Text txtGold, txtLife, txtTimerConstruction;
     public Button btnNextWave;
     public GameObject particles, home;
@@ -28,6 +29,7 @@ public class GameManager : MonoBehaviour {
     };
 
     private static Material notSelectedMaterial;
+	private static int selectedCoordX, selectedCoordY;
 	private static GameObject selectedTower;
     private static GameObject selectionAura;
 
@@ -42,6 +44,8 @@ public class GameManager : MonoBehaviour {
     private Spawn spawner;
 	private Animator animator;
 	private Camera topCam;
+	private AstarSingleton aStarSingleton;
+	private Astar aStar;
 
     void Start()
     {
@@ -67,14 +71,25 @@ public class GameManager : MonoBehaviour {
         nextWave = GameObject.Find("btnNextWave");
         nextWave.SetActive(false);
 
+		((Button) GameObject.Find("btnSell").GetComponent<Button>()).onClick.AddListener(SellTower); 
+		((Button) GameObject.Find("btnUp").GetComponent<Button>()).onClick.AddListener(UpTower); 
+
 		animator = ((Animator)GetComponent<Animator>());
 		topCam = (Camera) topCamObject.GetComponent<Camera> ();
 
 		animator.Play("CameraStartAnim", -1, 0F);
 		startTimer = Time.time;
 
-		//Astar astar = new Astar();
-		//print("astar : " + astar.isWayFree ());
+		/****A-STAR******/
+		aStarSingleton = AstarSingleton.getInstance ();
+		aStar = aStarSingleton.astar;
+
+		foreach (GameObject floor in GameObject.FindGameObjectsWithTag("floor"))
+		{
+			Build build = floor.GetComponent("Build") as Build;
+			build.InitiateAstar (aStarSingleton);
+		}
+
     }
 
     void Update()
@@ -332,7 +347,7 @@ public class GameManager : MonoBehaviour {
 		}*/
 	}
 
-	static public void SelectUnselectTower(GameObject towerToSelect)
+	static public void SelectUnselectTower(GameObject towerToSelect, int coordX, int coordY)
 	{
 		if (!towerToSelect)
 		{
@@ -341,17 +356,19 @@ public class GameManager : MonoBehaviour {
         else if (selectedTower != null && towerToSelect != selectedTower) // TODO autoriser cliquage dans zone d'infos de la tour
 		{
             UnselectTower();
-			SelectTower(towerToSelect);
+			SelectTower(towerToSelect, coordX, coordY);
 		}
 		else if (!selectedTower || towerToSelect != selectedTower) // TODO autoriser cliquage dans zone d'infos de la tour
 		{
-            SelectTower(towerToSelect);
+			SelectTower(towerToSelect, coordX, coordY);
 		}
 	}
 	
-	static private void SelectTower(GameObject towerToSelect)
+	static private void SelectTower(GameObject towerToSelect, int coordX, int coordY)
 	{
 		selectedTower = towerToSelect;
+		selectedCoordX = coordX;
+		selectedCoordY = coordY;
         selectionAura = (GameObject) Instantiate(GameObject.Find("SelectionAura"), towerToSelect.transform.position, Quaternion.identity);
         selectionAura.transform.SetParent(selectedTower.transform);
         RevealTowerDetails(towerToSelect);
@@ -426,7 +443,8 @@ public class GameManager : MonoBehaviour {
         Destroy(selectionAura);
         selectionAura = null;
         selectedTower = null;
-		
+		selectedCoordX = -1;
+		selectedCoordY = -1;
 		HideTowerDetails();
 	}
 	
@@ -457,18 +475,31 @@ public class GameManager : MonoBehaviour {
 		gameObjectSell.GetComponentInChildren<Text>().enabled = false;
 	}
 	
-	static public void sellTower()
+	public void SellTower()
 	{
 		Tower tower = selectedTower.GetComponentInChildren<Tower>() as Tower;
 		gold += tower.sellingPrice;
+		GetComponent<AudioSource>().PlayOneShot(sellingSound);
+		aStar.SetAstarGrid (selectedCoordX, selectedCoordY, false);
+
+		// Display green quads if construction mode is activated
+		if (step == Step.CONSTRUCTION)
+		{
+			foreach (GameObject floor in GameObject.FindGameObjectsWithTag("floor")) {
+				Build build = floor.GetComponent ("Build") as Build;
+				build.NotifyTowerChanged ();
+			}
+		}
+
 		Destroy(selectedTower);
+		selectedCoordX = -1;
+		selectedCoordY = -1;
 		selectedTower = null;
 		HideTowerDetails();
 	}
 	
-	static public void upTower()
+	public void UpTower()
 	{
 		print("up up up besoin de sauvegarder le Build de la tour sélectionnée.");
 	}
-
 }

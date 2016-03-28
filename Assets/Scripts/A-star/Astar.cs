@@ -33,38 +33,35 @@ TUserContext> where TPathNode : SettlersEngine.IPathNode<TUserContext>
 	}
 } 
 
+public class Astar : MonoBehaviour{
 
-public class Astar {
-
-
-	private MyPathNode[,] grid;
 	private int width;
 	private int height;
 	private Point departurePoint;
 	private Point arrivalPoint;
 	private SpatialAStar<MyPathNode, Object> aStar;
+	private MyPathNode[,] aStarGrid;
 
-	public Astar(int w, int h, int departureX, int departureY, int arrivalX, int arrivalY)
+	public Astar()
 	{
-		width = w;
-		height = h;
+		width = 7;
+		height = 8;
 		FillGrid ();
-		departurePoint = new Point(departureX, departureY);
-		arrivalPoint = new Point(arrivalX, arrivalY);
+		departurePoint = new Point(3, 0);
+		arrivalPoint = new Point(3, 7);
 
-		aStar = new SpatialAStar<MyPathNode, Object>(grid); 
+		aStar = new SpatialAStar<MyPathNode, Object>(aStarGrid); 
 	}
 
 	private void FillGrid ()
 	{
+		aStarGrid = new MyPathNode[width, height];
 		// setup grid with walls
-		grid = new MyPathNode[width, height];
-
 		for (int x = 0; x < width; x++)
 		{
 			for (int y = 0; y < height; y++)
 			{
-				grid[x, y] = new MyPathNode()
+				aStarGrid[x, y] = new MyPathNode()
 				{
 					IsTower = false,
 					X = x,
@@ -72,15 +69,76 @@ public class Astar {
 				};
 			}
 		}  
+		print ("fill : " + aStarGrid.Length);
 	}
 
-	public void SetGrid(int x, int y, bool isTower)
+	private bool IsFreeWay()
 	{
-		grid [x, y].IsTower = isTower;
-	}
-
-	public bool isWayFree()
-	{
+		//print ("4 0 " + aStarGrid[4,0].IsTower);
+		/*for (int x = 0; x < width; x++)
+		{
+			for (int y = 0; y < height; y++)
+			{
+				print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
+			}
+		}*/
 		return aStar.Search (departurePoint, arrivalPoint, null) != null;
+	}
+
+	public bool IsFreeWayWithFakeTower (int aStarCoordX, int aStarCoordY)
+	{
+		//print ("IsFreeWayWithFakeTower");
+		/*if (aStarCoordX == 4 && aStarCoordY == 0) {
+			print ("AVANT");
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
+				}
+			}
+		}*/
+		if (aStarGrid [aStarCoordX, aStarCoordY].IsTower)
+			return false;
+		
+		SetAstarGrid (aStarCoordX, aStarCoordY, true);
+		/*if (aStarCoordX == 4 && aStarCoordY == 0) {
+			print ("APRES");
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
+				}
+			}
+		}*/
+		bool result = IsFreeWay();
+		SetAstarGrid (aStarCoordX, aStarCoordY, false);
+		return result;
+	}
+
+	public void SetAstarGrid(int aStarCoordX, int aStarCoordY, bool isTower)
+	{
+		if (aStarCoordX == 4 && aStarCoordY == 0) {
+			print ("SetAstarGrid AVANT " + isTower + " " + aStarGrid[aStarCoordX, aStarCoordY].IsTower);
+			/*for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
+				}
+			}*/
+		}
+		aStarGrid[aStarCoordX, aStarCoordY].IsTower = isTower;
+		if (aStarCoordX == 4 && aStarCoordY == 0) {
+			print ("SetAstarGrid APRES " + isTower + " " + aStarGrid[aStarCoordX, aStarCoordY].IsTower);
+			/*for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
+				}
+			}*/
+		}
 	}
 }
