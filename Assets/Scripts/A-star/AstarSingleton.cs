@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 
-public class AstarSingleton : MonoBehaviour{
+public class AstarSingleton{
 
-	/******SINGLETON*******/
 	private static AstarSingleton instance = null; 
 	private static readonly object myLock = new object();
 
@@ -18,9 +17,7 @@ public class AstarSingleton : MonoBehaviour{
 	{ 
 		lock (myLock) 
 		{ 
-			print ("getinstance");
 			if (instance == null) {
-				print ("new");
 				instance = new AstarSingleton ();
 			}
 			return instance; 

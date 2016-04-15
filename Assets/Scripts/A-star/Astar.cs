@@ -33,7 +33,7 @@ TUserContext> where TPathNode : SettlersEngine.IPathNode<TUserContext>
 	}
 } 
 
-public class Astar : MonoBehaviour{
+public class Astar{
 
 	private int width;
 	private int height;
@@ -68,50 +68,20 @@ public class Astar : MonoBehaviour{
 					Y = y,
 				};
 			}
-		}  
-		print ("fill : " + aStarGrid.Length);
+		}
 	}
 
 	private bool IsFreeWay()
 	{
-		//print ("4 0 " + aStarGrid[4,0].IsTower);
-		/*for (int x = 0; x < width; x++)
-		{
-			for (int y = 0; y < height; y++)
-			{
-				print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
-			}
-		}*/
 		return aStar.Search (departurePoint, arrivalPoint, null) != null;
 	}
 
 	public bool IsFreeWayWithFakeTower (int aStarCoordX, int aStarCoordY)
 	{
-		//print ("IsFreeWayWithFakeTower");
-		/*if (aStarCoordX == 4 && aStarCoordY == 0) {
-			print ("AVANT");
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
-				}
-			}
-		}*/
 		if (aStarGrid [aStarCoordX, aStarCoordY].IsTower)
 			return false;
 		
 		SetAstarGrid (aStarCoordX, aStarCoordY, true);
-		/*if (aStarCoordX == 4 && aStarCoordY == 0) {
-			print ("APRES");
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
-				}
-			}
-		}*/
 		bool result = IsFreeWay();
 		SetAstarGrid (aStarCoordX, aStarCoordY, false);
 		return result;
@@ -119,26 +89,6 @@ public class Astar : MonoBehaviour{
 
 	public void SetAstarGrid(int aStarCoordX, int aStarCoordY, bool isTower)
 	{
-		if (aStarCoordX == 4 && aStarCoordY == 0) {
-			print ("SetAstarGrid AVANT " + isTower + " " + aStarGrid[aStarCoordX, aStarCoordY].IsTower);
-			/*for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
-				}
-			}*/
-		}
 		aStarGrid[aStarCoordX, aStarCoordY].IsTower = isTower;
-		if (aStarCoordX == 4 && aStarCoordY == 0) {
-			print ("SetAstarGrid APRES " + isTower + " " + aStarGrid[aStarCoordX, aStarCoordY].IsTower);
-			/*for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					print (x + " " + y + " = " + aStarGrid [x, y].IsTower);
-				}
-			}*/
-		}
 	}
 }
