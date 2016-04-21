@@ -14,9 +14,10 @@ public class GameManager : MonoBehaviour {
     public static Step step;
 
 	public GameObject topCamObject;
+	public GameObject cameraRef;
 	public AudioClip sellingSound;
     public Text txtGold, txtLife, txtTimerConstruction;
-    public Button btnNextWave;
+	public Button btnNextWave;
     public GameObject particles, home;
     public int constructionLast;
     public enum Step
@@ -46,6 +47,7 @@ public class GameManager : MonoBehaviour {
 	private Camera topCam;
 	private AstarSingleton aStarSingleton;
 	private Astar aStar;
+	private GameObject btnSkip;
 
     void Start()
     {
@@ -73,6 +75,8 @@ public class GameManager : MonoBehaviour {
 
 		((Button) GameObject.Find("btnSell").GetComponent<Button>()).onClick.AddListener(SellTower); 
 		((Button) GameObject.Find("btnUp").GetComponent<Button>()).onClick.AddListener(UpTower); 
+		btnSkip = GameObject.Find ("btnSkip");
+		((Button) btnSkip.GetComponent<Button> ()).onClick.AddListener(SkipCinematic); 
 
 		animator = ((Animator)GetComponent<Animator>());
 		topCam = (Camera) topCamObject.GetComponent<Camera> ();
@@ -89,7 +93,6 @@ public class GameManager : MonoBehaviour {
 			Build build = floor.GetComponent("Build") as Build;
 			build.InitiateAstar (aStarSingleton);
 		}
-
     }
 
     void Update()
@@ -148,9 +151,14 @@ public class GameManager : MonoBehaviour {
 	{
 		if (Time.time >= startTimer + 0.1F && animator.GetCurrentAnimatorStateInfo (0).IsName ("Stationnary"))
 		{
-			step = Step.CONSTRUCTION_TITLE;
-			titleTimer = constructionTimer = Time.time;
+			StratingConstructionTitle ();
 		}
+	}
+
+	private void StratingConstructionTitle()
+	{
+		step = Step.CONSTRUCTION_TITLE;
+		titleTimer = constructionTimer = Time.time;
 	}
 
 	private void ConstructionTitleTime()
@@ -500,6 +508,20 @@ public class GameManager : MonoBehaviour {
 	
 	public void UpTower()
 	{
-		print("up up up besoin de sauvegarder le Build de la tour sélectionnée.");
+		Tower tower = selectedTower.GetComponentInChildren<Tower>() as Tower;
+		GameObject goTowerUp = Instantiate(tower.towerUp, selectedTower.transform.position, Quaternion.identity) as GameObject;
+		Destroy (selectedTower);
+		SelectTower (goTowerUp, selectedCoordX, selectedCoordY);
+		Tower towerUp = goTowerUp.GetComponentInChildren<Tower>() as Tower;
+		gold -= towerUp.cost;
+	}
+
+	public void SkipCinematic()
+	{
+		animator.Stop ();
+		transform.position = cameraRef.transform.position;
+		transform.rotation = cameraRef.transform.rotation;
+		StratingConstructionTitle ();
+		btnSkip.SetActive(false);
 	}
 }
