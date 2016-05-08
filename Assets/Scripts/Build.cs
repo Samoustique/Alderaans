@@ -37,17 +37,19 @@ public class Build : MonoBehaviour {
 
     void OnMouseUp()
     {
-        // Display tower data
-		GameManager.SelectUnselectTower(towerBuilt, aStarCoordX, aStarCoordY);
-        if (isBuildable && towerToBuild && !towerBuilt)
-        {
-            towerBuilt = Instantiate(towerToBuild, transform.position, Quaternion.identity) as GameObject;
-            Tower tower = towerBuilt.GetComponentInChildren<Tower>() as Tower;
-			GameManager.gold -= tower.cost;
-			aStar.SetAstarGrid(aStarCoordX, aStarCoordY, true);
-			GetComponent<Renderer>().sharedMaterial = basicQuadMaterial;
-            RefreshBuildable(true, towerToBuild);
-        }
+		if (!EventSystem.current.IsPointerOverGameObject ())
+		{
+			// Display tower data
+			GameManager.SelectUnselectTower (towerBuilt, aStarCoordX, aStarCoordY);
+			if (isBuildable && towerToBuild && !towerBuilt) {
+				towerBuilt = Instantiate (towerToBuild, transform.position, Quaternion.identity) as GameObject;
+				Tower tower = towerBuilt.GetComponentInChildren<Tower> () as Tower;
+				GameManager.gold -= tower.cost;
+				aStar.SetAstarGrid (aStarCoordX, aStarCoordY, true);
+				GetComponent<Renderer> ().sharedMaterial = basicQuadMaterial;
+				RefreshBuildable (true, towerToBuild);
+			}
+		}
     }
 
    public void RefreshBuildable(bool isOn, GameObject towerToBuild)

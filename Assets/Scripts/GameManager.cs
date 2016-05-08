@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +17,8 @@ public class GameManager : MonoBehaviour {
 	public GameObject topCamObject;
 	public GameObject cameraRef;
 	public AudioClip sellingSound;
-    public Text txtGold, txtLife, txtTimerConstruction;
+    public Text txtGold, txtLife;
+	public GameObject panelTimerConstruction;
 	public Button btnNextWave;
     public GameObject particles, home;
     public int constructionLast;
@@ -71,6 +73,7 @@ public class GameManager : MonoBehaviour {
         
         btnNextWave.onClick.AddListener(EndConstructionTime);
         nextWave = GameObject.Find("btnNextWave");
+		panelTimerConstruction.SetActive(false);
         nextWave.SetActive(false);
 
 		((Button) GameObject.Find("btnSell").GetComponent<Button>()).onClick.AddListener(SellTower); 
@@ -104,11 +107,9 @@ public class GameManager : MonoBehaviour {
         UpdateGold();
 
 		UpdateTowerSelection();
-		
-		UpdateTowerDetails();
 
         // home life
-        txtLife.text = "LIFE : " + life;
+        txtLife.text = "Life : " + life;
         if (life == 0)
         {
             if (shakeTimer >= 0)
@@ -147,15 +148,16 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-	private void StratingTime()
+	private void StartingTime()
 	{
 		if (Time.time >= startTimer + 0.1F && animator.GetCurrentAnimatorStateInfo (0).IsName ("Stationnary"))
 		{
-			StratingConstructionTitle ();
+			StartingConstructionTitle ();
+			btnSkip.SetActive(false);
 		}
 	}
 
-	private void StratingConstructionTitle()
+	private void StartingConstructionTitle()
 	{
 		step = Step.CONSTRUCTION_TITLE;
 		titleTimer = constructionTimer = Time.time;
@@ -176,7 +178,7 @@ public class GameManager : MonoBehaviour {
 		{
 			step = Step.CONSTRUCTION;
 			constructionTimer = Time.time;
-			txtTimerConstruction.enabled = true;
+			panelTimerConstruction.SetActive (true);
 			nextWave.SetActive(true);
 			EnableChoices();
 		}
@@ -192,7 +194,7 @@ public class GameManager : MonoBehaviour {
         // timer display
         float timeLeft = constructionTimer + constructionLast - Time.time;
         int seconds = (int)(timeLeft % 60F);
-        txtTimerConstruction.text = seconds.ToString("00");
+		(panelTimerConstruction.GetComponentInChildren<Text>()).text = seconds.ToString("00");
         
         if (seconds == 0)
         {
@@ -202,7 +204,7 @@ public class GameManager : MonoBehaviour {
 
     public void EndConstructionTime()
     {
-        txtTimerConstruction.enabled = false;
+		panelTimerConstruction.SetActive(false);
         nextWave.SetActive(false);
         step = Step.ROUND_TITLE;
         titleTimer = Time.time;
@@ -268,7 +270,7 @@ public class GameManager : MonoBehaviour {
         switch (step)
         {
 			case Step.STARTING :
-				StratingTime();
+				StartingTime();
 				break;
             case Step.CONSTRUCTION_TITLE :
                 ConstructionTitleTime();
@@ -310,7 +312,7 @@ public class GameManager : MonoBehaviour {
 
     private void UpdateGold()
 	{
-        txtGold.text = "GOLD : " + gold;
+        txtGold.text = "Credits : " + gold;
 	}
 	
 	private void UpdateTowerSelection()
@@ -341,19 +343,6 @@ public class GameManager : MonoBehaviour {
             }
         }
     }
-
-    private void UpdateTowerDetails()
-	{
-		/*if(selectedTower != null)
-		{
-			Tower tower = selectedTower.GetComponentInChildren<Tower>() as Tower;
-			Button btnUp = GameObject.Find("btnUp").GetComponent<Button>() as Button;
-			ColorBlock cb = btnUp.colors;
-			cb.normalColor = Color.red;
-			btnUp.colors = cb;
-			btnUp.interactable = gold >= tower.evolvPrice;
-		}*/
-	}
 
 	static public void SelectUnselectTower(GameObject towerToSelect, int coordX, int coordY)
 	{
@@ -389,34 +378,34 @@ public class GameManager : MonoBehaviour {
 		GameObject towerSelectedDetails = GameObject.Find("TowerSelected");
 		towerSelectedDetails.GetComponent<Image>().enabled = true;
 		SphereCollider sphereColl = towerToSelect.GetComponentInChildren<SphereCollider>() as SphereCollider;
-
 		DisplayTowerCharacteristic("Name", tower.title);
 		DisplayTowerCharacteristic("Lvl", "lvl" + tower.level);
 		DisplayTowerCharacteristic("Dmg", "Dmg\n" + bullet.damage);
 		DisplayTowerCharacteristic("Rng", "Rng\n" + sphereColl.radius);
-		DisplayTowerCharacteristic("Rhy", "Rhy\n" + tower.rhythm);
+		DisplayTowerCharacteristic("Rhy", "Rhy\n" + (2 - tower.rhythm));
 		DisplayTowerCharacteristic("Sell", "Sell\n+" + tower.sellingPrice);
 		GameObject.Find("btnSell").GetComponent<Image>().enabled = true;
 		
 		Tower towerUp = null;
-        if (tower.towerUp != null)
-        {
-            Transform sphere = FindSphereInChildren(tower.towerUp.transform);
-            if (sphere != null)
-            {
-                towerUp = sphere.GetComponent<Tower>() as Tower;
-            }
+		if (tower.towerUp != null) {
+			Transform sphere = FindSphereInChildren (tower.towerUp.transform);
+			if (sphere != null) {
+				towerUp = sphere.GetComponent<Tower> () as Tower;
+			}
 
-            if (towerUp)
-            {
-                DisplayTowerCharacteristic("Up", "Up\n-" + towerUp.cost);
+			if (towerUp) {
+				DisplayTowerCharacteristic ("Up", "Up\n-" + towerUp.cost);
 
-                GameObject gameObjectUp = GameObject.Find("btnUp");
-                gameObjectUp.GetComponent<Image>().enabled = true;
-                Button btnUp = gameObjectUp.GetComponent<Button>() as Button;
-                btnUp.interactable = gold >= towerUp.cost;
-            }
-        }
+				GameObject gameObjectUp = GameObject.Find ("btnUp");
+				gameObjectUp.GetComponent<Image> ().enabled = true;
+				Button btnUp = gameObjectUp.GetComponent<Button> () as Button;
+				btnUp.interactable = gold >= towerUp.cost;
+			}
+		}
+		else
+		{
+			HideBtnUp ();
+		}
 	}
 	
 	static private Transform FindSphereInChildren(Transform objectToInspect)
@@ -478,6 +467,11 @@ public class GameManager : MonoBehaviour {
 		GameObject gameObjectUp = GameObject.Find("btnSell");
 		gameObjectUp.GetComponent<Image>().enabled = false;
 		gameObjectUp.GetComponentInChildren<Text>().enabled = false;
+		HideBtnUp ();
+	}
+
+	static private void HideBtnUp()
+	{
 		GameObject gameObjectSell = GameObject.Find("btnUp");
 		gameObjectSell.GetComponent<Image>().enabled = false;
 		gameObjectSell.GetComponentInChildren<Text>().enabled = false;
@@ -511,6 +505,16 @@ public class GameManager : MonoBehaviour {
 		Tower tower = selectedTower.GetComponentInChildren<Tower>() as Tower;
 		GameObject goTowerUp = Instantiate(tower.towerUp, selectedTower.transform.position, Quaternion.identity) as GameObject;
 		Destroy (selectedTower);
+
+		foreach (GameObject floor in GameObject.FindGameObjectsWithTag("floor")) {
+			Build build = floor.GetComponent ("Build") as Build;
+			if (build.aStarCoordX == selectedCoordX && build.aStarCoordY == selectedCoordY)
+			{
+				build.towerBuilt = goTowerUp;
+				break;
+			}
+		}
+
 		SelectTower (goTowerUp, selectedCoordX, selectedCoordY);
 		Tower towerUp = goTowerUp.GetComponentInChildren<Tower>() as Tower;
 		gold -= towerUp.cost;
@@ -521,7 +525,7 @@ public class GameManager : MonoBehaviour {
 		animator.Stop ();
 		transform.position = cameraRef.transform.position;
 		transform.rotation = cameraRef.transform.rotation;
-		StratingConstructionTitle ();
+		StartingConstructionTitle ();
 		btnSkip.SetActive(false);
 	}
 }
