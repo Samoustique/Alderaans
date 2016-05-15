@@ -19,6 +19,7 @@ abstract public class Tower : MonoBehaviour {
     private GameObject focusedMob;
     private List<GameObject> targetsStack;
     private float _rhythm;
+	private bool isShootingAllowed = true;
 
     void Start()
     {
@@ -88,28 +89,32 @@ abstract public class Tower : MonoBehaviour {
 
     virtual public void Update()
     {
-        if(focusedMob != null)
-        {
-            // Smoke
-            ManageSmoke();
+		if (isShootingAllowed)
+		{
+			if (focusedMob != null) {
+				// Smoke
+				ManageSmoke ();
 
-            // Canon
-            Vector3 target = focusedMob.transform.position;
-            transform.LookAt(target);
+				// Canon
+				Vector3 target = focusedMob.transform.position;
+				transform.LookAt (target);
 
-            // Fire timing
-            _rhythm -= Time.deltaTime;
-            if (_rhythm <= 0)
-            {
-                Fire(target);
-                _rhythm = rhythm;
-            }
-        }
-        else
-        {
-            nextTarget();
-        }
+				// Fire timing
+				_rhythm -= Time.deltaTime;
+				if (_rhythm <= 0) {
+					Fire (target);
+					_rhythm = rhythm;
+				}
+			} else {
+				nextTarget ();
+			}
+		}
     }
+
+	public void NotifyStopShooting ()
+	{
+		isShootingAllowed = false;
+	}
 
     abstract protected void PropulseBullet(GameObject _bullet, Vector3 target);
     abstract protected void ManageSmoke();

@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.SceneManagement;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -8,81 +9,91 @@ using System.Text;
 using System;
 
 public class GameManager : MonoBehaviour {
-
-    public static int gold = 4500;
-    public static int life = 5;
-    public static List<GameObject> mobsAlive = new List<GameObject>();
-    public static Step step;
+	public static int gold = 680;
+	public static int life = 5;
+	public static List<GameObject> mobsAlive = new List<GameObject>();
+	public static Step step;
 
 	public GameObject topCamObject;
-	public GameObject cameraRef;
 	public AudioClip sellingSound;
-    public Text txtGold, txtLife;
+	public Text txtGold, txtLife;
 	public GameObject panelTimerConstruction;
 	public Button btnNextWave;
-    public GameObject particles, home;
-    public int constructionLast;
-    public enum Step
-    {
+	public GameObject particles, home, gameOver;
+	public int constructionLast;
+	public enum Step
+	{
 		STARTING,
-        CONSTRUCTION_TITLE,
-        CONSTRUCTION,
-        ROUND_TITLE,
-        ROUND
-    };
+		CONSTRUCTION_TITLE,
+		CONSTRUCTION,
+		ROUND_TITLE,
+		ROUND,
+		GAME_OVER
+	};
 
-    private static Material notSelectedMaterial;
+	private static Material notSelectedMaterial;
 	private static int selectedCoordX, selectedCoordY;
 	private static GameObject selectedTower;
-    private static GameObject selectionAura;
+	private static GameObject selectionAura;
 
-    private Toggle[] toggles;
-    private Dictionary<TglTower, Tower> choiceTowers;
-    private GameObject title, smallTitle, timerConstruction, nextWave;
-//    private UnityStandardAssets.ImageEffects.TiltShift tiltShift;
-    private float startTimer, titleTimer, spawnTimer, constructionTimer, spawnLaps, shakeTimer, shakeAmount;
-    //private int nbSpawnInARound;
-    private int nbRound = 1;
-    private bool showTitleText;
-    private Spawn spawner;
+	private Toggle[] toggles;
+	private Dictionary<TglTower, Tower> choiceTowers;
+	private GameObject title, smallTitle, timerConstruction, nextWave;
+	private float startTimer, titleTimer, spawnTimer, constructionTimer, spawnLaps, shakeTimer, shakeAmount;
+	//private int nbSpawnInARound;
+	private int nbRound = 1;
+	private bool showTitleText;
+	private Spawn spawner;
 	private Animator animator;
 	private Camera topCam;
 	private AstarSingleton aStarSingleton;
 	private Astar aStar;
 	private GameObject btnSkip;
+	private GameObject btnCamera;
+	private List<GameObject> camReferences = new List<GameObject>();
+	private int idCamRef = 0;
 
-    void Start()
-    {
-        toggles = GameObject.Find("TowerChoice").GetComponentsInChildren<Toggle>();
-        choiceTowers = new Dictionary<TglTower, Tower>();
-        retrieveChoiceTowers();
-        DisableChoices();
+	void Start()
+	{
+		toggles = GameObject.Find("TowerChoice").GetComponentsInChildren<Toggle>();
+		choiceTowers = new Dictionary<TglTower, Tower>();
+		retrieveChoiceTowers();
+		DisableChoices();
 
-        title = GameObject.Find("txtTitle");
+		title = GameObject.Find("txtTitle");
 		title.SetActive(false);
-        smallTitle = GameObject.Find("txtSmallTitle");
+		smallTitle = GameObject.Find("txtSmallTitle");
 		smallTitle.SetActive(false);
-        //tiltShift = GameObject.Find("Main Camera").GetComponent<UnityStandardAssets.ImageEffects.TiltShift>();
-        spawnLaps = 2;
-        spawner = GameObject.Find("Spawn").GetComponentInChildren<Spawn>();
+		spawnLaps = 2;
+		spawner = GameObject.Find("Spawn").GetComponentInChildren<Spawn>();
 		step = Step.STARTING;
-        shakeAmount = 0.1F;
-        shakeTimer = 1F;
+		shakeAmount = 0.1F;
+		shakeTimer = 1F;
 
-        HideTowerDetails();
-        
-        btnNextWave.onClick.AddListener(EndConstructionTime);
-        nextWave = GameObject.Find("btnNextWave");
+		HideTowerDetails();
+
+		btnNextWave.onClick.AddListener(EndConstructionTime);
+		nextWave = GameObject.Find("btnNextWave");
 		panelTimerConstruction.SetActive(false);
-        nextWave.SetActive(false);
+		nextWave.SetActive(false);
 
-		((Button) GameObject.Find("btnSell").GetComponent<Button>()).onClick.AddListener(SellTower); 
+		//((Button) GameObject.Find("btnRestart").GetComponent<Button>()).onClick.AddListener(Restart);
+		//((Button) GameObject.Find("btnMainMenu").GetComponent<Button>()).onClick.AddListener(MainMenu);
+		((Button) GameObject.Find("btnCamera").GetComponent<Button>()).onClick.AddListener(MoveCamera);
+		((Button) GameObject.Find("btnSell").GetComponent<Button>()).onClick.AddListener(SellTower);
 		((Button) GameObject.Find("btnUp").GetComponent<Button>()).onClick.AddListener(UpTower); 
+		btnCamera = GameObject.Find ("btnCamera");
 		btnSkip = GameObject.Find ("btnSkip");
 		((Button) btnSkip.GetComponent<Button> ()).onClick.AddListener(SkipCinematic); 
+		btnCamera.SetActive (false);
+		gameOver.SetActive (false);
 
 		animator = ((Animator)GetComponent<Animator>());
 		topCam = (Camera) topCamObject.GetComponent<Camera> ();
+
+		camReferences.Add(GameObject.Find("CameraRefBase"));
+		camReferences.Add(GameObject.Find("CameraRefPos2"));
+		camReferences.Add(GameObject.Find("CameraRefPos3"));
 
 		animator.Play("CameraStartAnim", -1, 0F);
 		startTimer = Time.time;
@@ -96,32 +107,83 @@ public class GameManager : MonoBehaviour {
 			Build build = floor.GetComponent("Build") as Build;
 			build.InitiateAstar (aStarSingleton);
 		}
-    }
+	}
 
-    void Update()
-    {
+	void Update()
+	{
 		InputKeys();
 
-        UpdateRound();
+		UpdateRound();
 
-        UpdateGold();
+		UpdateGold();
 
 		UpdateTowerSelection();
 
-        // home life
-        txtLife.text = "Life : " + life;
-        if (life == 0)
-        {
-            if (shakeTimer >= 0)
-            {
-                Vector2 shakePos = UnityEngine.Random.insideUnitCircle * shakeAmount;
-                transform.position = new Vector3(transform.position.x + shakePos.x, transform.position.y + shakePos.y, transform.position.z);
-                shakeTimer -= Time.deltaTime;
-            }
-            Instantiate(particles, GameObject.Find("home").transform.position, Quaternion.identity);
-            Destroy(GameObject.Find("home"));
-        }
-    }
+		// home life
+		txtLife.text = "Life : " + life;
+		if (life == 0)
+		{
+			if (shakeTimer >= 0)
+			{
+				animator.Stop ();
+				Vector2 shakePos = UnityEngine.Random.insideUnitCircle * shakeAmount;
+				transform.position = new Vector3 (transform.position.x + shakePos.x, transform.position.y + shakePos.y, transform.position.z);
+				shakeTimer -= Time.deltaTime;
+			}
+			else if (!animator.GetCurrentAnimatorStateInfo (0).IsName ("CameraGameOverAnim"))
+			{
+				animator.Rebind ();
+				animator.Play("CameraGameOverAnim", -1, 0F);
+			}
+			if (step != Step.GAME_OVER)
+			{
+				StopNavMeshAgents ();
+				StopTurretsShooting ();
+				Instantiate (particles, home.transform.position, Quaternion.identity);
+				Destroy (home);
+				ShowGameOver ();
+				step = Step.GAME_OVER;
+			}
+		}
+	}
+
+	void ShowGameOver ()
+	{
+		foreach (GameObject ui in GameObject.FindGameObjectsWithTag("UI"))
+		{
+			string name = ui.transform.name;
+			if (name != "Canvas")
+			{
+				ui.SetActive (false);
+			}
+		}
+
+		gameOver.SetActive (true);
+	}
+
+	void StopTurretsShooting ()
+	{
+		foreach (GameObject floor in GameObject.FindGameObjectsWithTag("floor")) {
+			Build build = floor.GetComponent("Build") as Build;
+			GameObject goTower = build.towerBuilt;
+			if (goTower != null)
+			{
+				Tower tower = goTower.GetComponentInChildren<Tower>() as Tower;
+				if (tower != null)
+				{
+					tower.NotifyStopShooting ();
+				}
+			}
+		}
+	}
+
+	void StopNavMeshAgents ()
+	{
+		foreach(GameObject mob in mobsAlive)
+		{
+			(mob.GetComponent<NavMeshAgent> () as NavMeshAgent).Stop();
+		}
+	}
 
 	void InputKeys()
 	{
@@ -131,22 +193,22 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-    void DisableChoices()
-    {
-        // disable towerChoice
-        foreach (TglTower tglTower in choiceTowers.Keys)
-        {
-            tglTower.disable();
-        }
-    }
+	void DisableChoices()
+	{
+		// disable towerChoice
+		foreach (TglTower tglTower in choiceTowers.Keys)
+		{
+			tglTower.disable();
+		}
+	}
 
-    void EnableChoices()
-    {
-        foreach (TglTower tglTower in choiceTowers.Keys)
-        {
-            tglTower.enable();
-        }
-    }
+	void EnableChoices()
+	{
+		foreach (TglTower tglTower in choiceTowers.Keys)
+		{
+			tglTower.enable();
+		}
+	}
 
 	private void StartingTime()
 	{
@@ -154,6 +216,7 @@ public class GameManager : MonoBehaviour {
 		{
 			StartingConstructionTitle ();
 			btnSkip.SetActive(false);
+			btnCamera.SetActive(true);
 		}
 	}
 
@@ -167,13 +230,12 @@ public class GameManager : MonoBehaviour {
 	{
 		(title.GetComponent<Text>()).text = "Construction";
 		title.SetActive(true);
-		//tiltShift.enabled = true;
 		smallTitle.SetActive(false);
 		foreach(Toggle toggle in toggles)
 		{
 			toggle.enabled = false;
 		}
-		
+
 		if (Time.time >= titleTimer + 2)
 		{
 			step = Step.CONSTRUCTION;
@@ -184,107 +246,99 @@ public class GameManager : MonoBehaviour {
 		}
 	}
 
-    private void ConstructionTime()
-    {
-        (smallTitle.GetComponent<Text>()).text = "Construction";
-        title.SetActive(false);
-        //tiltShift.enabled = false;
-        smallTitle.SetActive(true);
-        
-        // timer display
-        float timeLeft = constructionTimer + constructionLast - Time.time;
-        int seconds = (int)(timeLeft % 60F);
+	private void ConstructionTime()
+	{
+		(smallTitle.GetComponent<Text>()).text = "Construction";
+		title.SetActive(false);
+		smallTitle.SetActive(true);
+
+		// timer display
+		float timeLeft = constructionTimer + constructionLast - Time.time;
+		int seconds = (int)(timeLeft % 60F);
 		(panelTimerConstruction.GetComponentInChildren<Text>()).text = seconds.ToString("00");
-        
-        if (seconds == 0)
-        {
-            EndConstructionTime();
-        }
-    }
 
-    public void EndConstructionTime()
-    {
-		panelTimerConstruction.SetActive(false);
-        nextWave.SetActive(false);
-        step = Step.ROUND_TITLE;
-        titleTimer = Time.time;
-        //nbSpawnInARound = 0;
-        DisableChoices();
-    }
-
-    private void RoundTitleTime()
-    {
-        (title.GetComponent<Text>()).text = "Wave " + nbRound;
-        title.SetActive(true);
-        //tiltShift.enabled = true;
-        smallTitle.SetActive(false);
-        foreach (Toggle toggle in toggles)
-        {
-            toggle.enabled = false;
-        }
-
-        if (Time.time >= titleTimer + 2)
-        {
-            step = Step.ROUND;
-            titleTimer = Time.time;
-        }
-    }
-
-    private void RoundTime()
-    {
-		(smallTitle.GetComponent<Text>()).text = "Wave " + nbRound;
-        title.SetActive(false);
-        //tiltShift.enabled = false;
-        smallTitle.SetActive(true);
-
-		if (animator.GetCurrentAnimatorStateInfo (0).IsName ("Stationnary"))
+		if (seconds == 0)
 		{
-			LaunchRandomCamAnim();
+			EndConstructionTime();
+		}
+	}
+
+	public void EndConstructionTime()
+	{
+		panelTimerConstruction.SetActive(false);
+		nextWave.SetActive(false);
+		step = Step.ROUND_TITLE;
+		titleTimer = Time.time;
+		//nbSpawnInARound = 0;
+		DisableChoices();
+	}
+
+	private void RoundTitleTime()
+	{
+		(title.GetComponent<Text>()).text = "Wave " + nbRound;
+		title.SetActive(true);
+		smallTitle.SetActive(false);
+		foreach (Toggle toggle in toggles)
+		{
+			toggle.enabled = false;
 		}
 
-        // if we finished to spawn everybody
-        if (Spawn.mobsPerRound[nbRound - 1].Count == 0)
-        {
-            if (GameManager.mobsAlive.Count == 0)
-            {
-                titleTimer = Time.time;
-                nbRound++;
-                step = Step.CONSTRUCTION_TITLE;
-				animator.Play("CameraReturnAnim", -1, 0F);
-            }
-        }
-        else
-        {
-            if (Time.time > spawnTimer + spawnLaps)
-            {
-                //nbSpawnInARound++;
-				spawner.SpawnMob(nbRound);
-                spawnTimer = Time.time;
-				spawnLaps = UnityEngine.Random.Range(0.2F, 3F);
-            }
-        }
-    }
+		if (Time.time >= titleTimer + 2)
+		{
+			step = Step.ROUND;
+			titleTimer = Time.time;
+		}
+	}
 
-    private void UpdateRound()
+	private void RoundTime()
 	{
-        switch (step)
-        {
-			case Step.STARTING :
-				StartingTime();
-				break;
-            case Step.CONSTRUCTION_TITLE :
-                ConstructionTitleTime();
-                break;
-            case Step.CONSTRUCTION :
-                ConstructionTime();
-                break;
-            case Step.ROUND_TITLE :
-                RoundTitleTime();
-                break;
-            case Step.ROUND :
-                RoundTime();
-                break;
-        }
+		(smallTitle.GetComponent<Text>()).text = "Wave " + nbRound;
+		title.SetActive(false);
+		smallTitle.SetActive(true);
+
+		// if we finished to spawn everybody
+		if (Spawn.mobsPerRound[nbRound - 1].Count == 0)
+		{
+			if (GameManager.mobsAlive.Count == 0)
+			{
+				titleTimer = Time.time;
+				nbRound++;
+				step = Step.CONSTRUCTION_TITLE;
+				//animator.Play("CameraReturnAnim", -1, 0F);
+			}
+		}
+		else
+		{
+			if (Time.time > spawnTimer + spawnLaps)
+			{
+				//nbSpawnInARound++;
+				spawner.SpawnMob(nbRound);
+				spawnTimer = Time.time;
+				spawnLaps = UnityEngine.Random.Range(0.2F, 3F);
+			}
+		}
+	}
+
+	private void UpdateRound()
+	{
+		switch (step)
+		{
+		case Step.STARTING :
+			StartingTime();
+			break;
+		case Step.CONSTRUCTION_TITLE :
+			ConstructionTitleTime();
+			break;
+		case Step.CONSTRUCTION :
+			ConstructionTime();
+			break;
+		case Step.ROUND_TITLE :
+			RoundTitleTime();
+			break;
+		case Step.ROUND :
+			RoundTime();
+			break;
+		}
 	}
 
 	private void LaunchRandomCamAnim()
@@ -295,64 +349,64 @@ public class GameManager : MonoBehaviour {
 		animator.Play(cameraCrossField + animNumber + anim, -1, 0F);
 	}
 
-    static public void ShowUpReward(Vector3 showPosition, GameObject textToInstantiate)
-    {
-        Vector3 worldToScreenPoint = Camera.main.WorldToScreenPoint(showPosition);
-        GameObject toDelete = new GameObject();
-        GameObject empty = Instantiate(toDelete, worldToScreenPoint, Quaternion.identity) as GameObject;
-        empty.transform.name = "RewardWrapper";
-        empty.transform.SetParent(GameObject.Find("Canvas").transform);
-        GameObject temp = Instantiate(textToInstantiate, worldToScreenPoint, Quaternion.identity) as GameObject;
-        temp.transform.SetParent(empty.transform);
-        temp.GetComponent<Animator>().SetTrigger("Reward");
-        Destroy(temp.gameObject, 1.0F);
-        Destroy(empty.gameObject, 1.0F);
-        Destroy(toDelete, 1.0F);
-    }
-
-    private void UpdateGold()
+	static public void ShowUpReward(Vector3 showPosition, GameObject textToInstantiate)
 	{
-        txtGold.text = "Credits : " + gold;
+		Vector3 worldToScreenPoint = Camera.main.WorldToScreenPoint(showPosition);
+		GameObject toDelete = new GameObject();
+		GameObject empty = Instantiate(toDelete, worldToScreenPoint, Quaternion.identity) as GameObject;
+		empty.transform.name = "RewardWrapper";
+		empty.transform.SetParent(GameObject.Find("Canvas").transform);
+		GameObject temp = Instantiate(textToInstantiate, worldToScreenPoint, Quaternion.identity) as GameObject;
+		temp.transform.SetParent(empty.transform);
+		temp.GetComponent<Animator>().SetTrigger("Reward");
+		Destroy(temp.gameObject, 1.0F);
+		Destroy(empty.gameObject, 1.0F);
+		Destroy(toDelete, 1.0F);
 	}
-	
+
+	private void UpdateGold()
+	{
+		txtGold.text = "Credits : " + gold;
+	}
+
 	private void UpdateTowerSelection()
 	{
-        if (step == Step.CONSTRUCTION)
-        {
-            foreach (TglTower tglTower in choiceTowers.Keys)
-            {
-                if (gold >= choiceTowers[tglTower].cost)
-                    tglTower.enable();
-                else
-                    tglTower.disable();
-            }
-        }
+		if (step == Step.CONSTRUCTION)
+		{
+			foreach (TglTower tglTower in choiceTowers.Keys)
+			{
+				if (gold >= choiceTowers[tglTower].cost)
+					tglTower.enable();
+				else
+					tglTower.disable();
+			}
+		}
 	}
 
-    private void retrieveChoiceTowers()
-    {
-        foreach (Toggle toggle in toggles)
-        {
-            TglTower tglTower = toggle.GetComponent<TglTower>() as TglTower;
-            Tower tower = null;
-            Transform sphere = FindSphereInChildren(tglTower.towerToBuild.transform);
-            if (sphere != null)
-            {
-                tower = sphere.GetComponent<Tower>() as Tower;
-                choiceTowers.Add(tglTower, tower);
-            }
-        }
-    }
+	private void retrieveChoiceTowers()
+	{
+		foreach (Toggle toggle in toggles)
+		{
+			TglTower tglTower = toggle.GetComponent<TglTower>() as TglTower;
+			Tower tower = null;
+			Transform sphere = FindSphereInChildren(tglTower.towerToBuild.transform);
+			if (sphere != null)
+			{
+				tower = sphere.GetComponent<Tower>() as Tower;
+				choiceTowers.Add(tglTower, tower);
+			}
+		}
+	}
 
 	static public void SelectUnselectTower(GameObject towerToSelect, int coordX, int coordY)
 	{
 		if (!towerToSelect)
 		{
-            UnselectTower();
+			UnselectTower();
 		}
-        else if (selectedTower != null && towerToSelect != selectedTower) // TODO autoriser cliquage dans zone d'infos de la tour
+		else if (selectedTower != null && towerToSelect != selectedTower) // TODO autoriser cliquage dans zone d'infos de la tour
 		{
-            UnselectTower();
+			UnselectTower();
 			SelectTower(towerToSelect, coordX, coordY);
 		}
 		else if (!selectedTower || towerToSelect != selectedTower) // TODO autoriser cliquage dans zone d'infos de la tour
@@ -360,17 +414,17 @@ public class GameManager : MonoBehaviour {
 			SelectTower(towerToSelect, coordX, coordY);
 		}
 	}
-	
+
 	static private void SelectTower(GameObject towerToSelect, int coordX, int coordY)
 	{
 		selectedTower = towerToSelect;
 		selectedCoordX = coordX;
 		selectedCoordY = coordY;
-        selectionAura = (GameObject) Instantiate(GameObject.Find("SelectionAura"), towerToSelect.transform.position, Quaternion.identity);
-        selectionAura.transform.SetParent(selectedTower.transform);
-        RevealTowerDetails(towerToSelect);
+		selectionAura = (GameObject) Instantiate(GameObject.Find("SelectionAura"), towerToSelect.transform.position, Quaternion.identity);
+		selectionAura.transform.SetParent(selectedTower.transform);
+		RevealTowerDetails(towerToSelect);
 	}
-	
+
 	static private void RevealTowerDetails(GameObject towerToSelect)
 	{
 		Tower tower = towerToSelect.GetComponentInChildren<Tower>() as Tower;
@@ -385,7 +439,7 @@ public class GameManager : MonoBehaviour {
 		DisplayTowerCharacteristic("Rhy", "Rhy\n" + (2 - tower.rhythm));
 		DisplayTowerCharacteristic("Sell", "Sell\n+" + tower.sellingPrice);
 		GameObject.Find("btnSell").GetComponent<Image>().enabled = true;
-		
+
 		Tower towerUp = null;
 		if (tower.towerUp != null) {
 			Transform sphere = FindSphereInChildren (tower.towerUp.transform);
@@ -407,7 +461,7 @@ public class GameManager : MonoBehaviour {
 			HideBtnUp ();
 		}
 	}
-	
+
 	static private Transform FindSphereInChildren(Transform objectToInspect)
 	{
 		Transform toReturn = null;
@@ -417,7 +471,7 @@ public class GameManager : MonoBehaviour {
 				return child;
 			}
 			else
-            {
+			{
 				toReturn = FindSphereInChildren(child);
 				if(toReturn != null)
 				{
@@ -427,43 +481,43 @@ public class GameManager : MonoBehaviour {
 		}
 		return toReturn;
 	}
-	
+
 	static private void DisplayTowerCharacteristic(string objectName, string textToSet)
 	{
 		Text text = GameObject.Find(objectName).GetComponent<Text>();
 		text.text = textToSet;
 		text.enabled = true;
 	}	
-	
+
 	static public void UnselectTower()
 	{
-        Destroy(selectionAura);
-        selectionAura = null;
-        selectedTower = null;
+		Destroy(selectionAura);
+		selectionAura = null;
+		selectedTower = null;
 		selectedCoordX = -1;
 		selectedCoordY = -1;
 		HideTowerDetails();
 	}
-	
+
 	static private void HideTowerDetails()
 	{
 		// background image
 		GameObject towerSelectedDetails = GameObject.Find("TowerSelected");
 		towerSelectedDetails.GetComponent<Image>().enabled = false;
-		
+
 		// texts
 		Text[] texts = towerSelectedDetails.GetComponentsInChildren<Text>();
 		foreach (Text text in texts)
-        {
+		{
 			text.enabled = false;
-        }
-		
+		}
+
 		// buttons
 		Image[] images = towerSelectedDetails.GetComponentsInChildren<Image>();
 		foreach (Image img in images)
-        {
+		{
 			img.enabled = false;
-        }
+		}
 		GameObject gameObjectUp = GameObject.Find("btnSell");
 		gameObjectUp.GetComponent<Image>().enabled = false;
 		gameObjectUp.GetComponentInChildren<Text>().enabled = false;
@@ -476,8 +530,8 @@ public class GameManager : MonoBehaviour {
 		gameObjectSell.GetComponent<Image>().enabled = false;
 		gameObjectSell.GetComponentInChildren<Text>().enabled = false;
 	}
-	
-	public void SellTower()
+
+	private void SellTower()
 	{
 		Tower tower = selectedTower.GetComponentInChildren<Tower>() as Tower;
 		gold += tower.sellingPrice;
@@ -499,8 +553,8 @@ public class GameManager : MonoBehaviour {
 		selectedTower = null;
 		HideTowerDetails();
 	}
-	
-	public void UpTower()
+
+	private void UpTower()
 	{
 		Tower tower = selectedTower.GetComponentInChildren<Tower>() as Tower;
 		GameObject goTowerUp = Instantiate(tower.towerUp, selectedTower.transform.position, Quaternion.identity) as GameObject;
@@ -520,12 +574,42 @@ public class GameManager : MonoBehaviour {
 		gold -= towerUp.cost;
 	}
 
-	public void SkipCinematic()
+	private void SkipCinematic()
 	{
-		animator.Stop ();
-		transform.position = cameraRef.transform.position;
-		transform.rotation = cameraRef.transform.rotation;
+		animator.Play("Stationnary", -1, 0F);
+		transform.position = camReferences[idCamRef].transform.position;
+		transform.rotation = camReferences[idCamRef].transform.rotation;
 		StartingConstructionTitle ();
 		btnSkip.SetActive(false);
+		btnCamera.SetActive(true);
+	}
+
+	private void Restart()
+	{
+		SceneManager.LoadScene ("towerDefense");
+	}
+
+	private void MainMenu()
+	{
+		SceneManager.LoadScene ("Menu");
+	}
+
+	private void MoveCamera()
+	{
+		if (animator.GetCurrentAnimatorStateInfo (0).IsName ("Stationnary"))
+		{
+			if (idCamRef == camReferences.Count - 1)
+			{
+				idCamRef = 0;
+			}
+			else
+			{
+				idCamRef++;
+			}
+			animator.Stop ();
+			transform.position = camReferences[idCamRef].transform.position;
+			transform.rotation = camReferences[idCamRef].transform.rotation;
+			animator.Rebind ();
+		}
 	}
 }

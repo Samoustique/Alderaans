@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2e1abe44da8738b438509608b16cb249
-timeCreated: 1461411723
+timeCreated: 1463327807
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -19,6 +19,9 @@ TextureImporter:
     21300024: BigPanelBackground
     21300026: Logo
     21300028: btnSmall
+    21300030: BtnCamera
+    21300032: LogoRebel
+    21300034: "LogoEmp\xEEre"
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -472,6 +475,70 @@ TextureImporter:
         - {x: -33, y: -32}
         - {x: 33, y: -32}
         - {x: 33, y: 32}
+    - name: BtnCamera
+      rect:
+        serializedVersion: 2
+        x: 532
+        y: 748
+        width: 66
+        height: 37
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -27, y: 16.5}
+        - {x: -31, y: 15.5}
+        - {x: -31, y: -13.5}
+        - {x: -30, y: -17.5}
+        - {x: 28, y: -17.5}
+        - {x: 31, y: -16.5}
+        - {x: 31, y: 15.5}
+        - {x: 29, y: 16.5}
+    - name: LogoRebel
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 1091
+        width: 106
+        height: 109
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: 20, y: 47.5}
+        - {x: 6, y: 54.5}
+        - {x: -4, y: 54.5}
+        - {x: -25, y: 33.5}
+        - {x: -24, y: 29.5}
+        - {x: -22, y: 27.5}
+        - {x: -32, y: 1.5}
+        - {x: -23, y: 43.5}
+        - {x: -25, y: 48.5}
+        - {x: -31, y: 50.5}
+        - {x: -53, y: 31.5}
+        - {x: -53, y: -46.5}
+        - {x: -48, y: -54.5}
+        - {x: 46, y: -54.5}
+        - {x: 53, y: -52.5}
+        - {x: 53, y: 27.5}
+        - {x: 30, y: 47.5}
+    - name: "LogoEmp\xEEre"
+      rect:
+        serializedVersion: 2
+        x: 114
+        y: 1082
+        width: 114
+        height: 115
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -32, y: 57.5}
+        - {x: -57, y: 38.5}
+        - {x: -57, y: -57.5}
+        - {x: 57, y: -57.5}
+        - {x: 57, y: 39.5}
+        - {x: 51, y: 57.5}
     outline: []
   spritePackingTag: 
   userData: 
