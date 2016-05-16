@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2e1abe44da8738b438509608b16cb249
-timeCreated: 1463327807
+timeCreated: 1463401388
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -22,6 +22,8 @@ TextureImporter:
     21300030: BtnCamera
     21300032: LogoRebel
     21300034: "LogoEmp\xEEre"
+    21300036: BtnStartGame
+    21300038: BtnMainMenu
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -408,58 +410,6 @@ TextureImporter:
         - {x: -100, y: -32}
         - {x: 100, y: -32}
         - {x: 100, y: 32}
-    - name: BigPanelBackground
-      rect:
-        serializedVersion: 2
-        x: 185
-        y: 0
-        width: 615
-        height: 560
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline:
-      - - {x: 286.5, y: -273}
-        - {x: 290.5, y: -269}
-        - {x: 297.5, y: -269}
-        - {x: 301.5, y: -266}
-        - {x: 301.5, y: -264}
-        - {x: 305.5, y: -264}
-        - {x: 307.5, y: -262}
-        - {x: 307.5, y: 262}
-        - {x: 305.5, y: 264}
-        - {x: 301.5, y: 264}
-        - {x: 301.5, y: 266}
-        - {x: 300.5, y: 268}
-        - {x: 297.5, y: 269}
-        - {x: 290.5, y: 269}
-        - {x: 286.5, y: 273}
-        - {x: 278.5, y: 273}
-        - {x: 278.5, y: 277}
-        - {x: 275.5, y: 280}
-        - {x: -277.5, y: 280}
-        - {x: -280.5, y: 277}
-        - {x: -280.5, y: 276}
-        - {x: -288.5, y: 269}
-        - {x: -295.5, y: 269}
-        - {x: -299.5, y: 266}
-        - {x: -299.5, y: 264}
-        - {x: -303.5, y: 264}
-        - {x: -307.5, y: 260}
-        - {x: -307.5, y: -260}
-        - {x: -303.5, y: -264}
-        - {x: -299.5, y: -264}
-        - {x: -299.5, y: -266}
-        - {x: -298.5, y: -268}
-        - {x: -295.5, y: -269}
-        - {x: -288.5, y: -269}
-        - {x: -284.5, y: -273}
-        - {x: -276.5, y: -273}
-        - {x: -276.5, y: -277}
-        - {x: -273.5, y: -280}
-        - {x: 275.5, y: -280}
-        - {x: 278.5, y: -277}
-        - {x: 278.5, y: -273}
     - name: btnSmall
       rect:
         serializedVersion: 2
@@ -539,6 +489,37 @@ TextureImporter:
         - {x: 57, y: -57.5}
         - {x: 57, y: 39.5}
         - {x: 51, y: 57.5}
+    - name: BtnStartGame
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 372
+        width: 318
+        height: 182
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -159, y: 91}
+        - {x: -159, y: -91}
+        - {x: 158, y: -91}
+        - {x: 159, y: -90}
+        - {x: 159, y: 91}
+    - name: BtnMainMenu
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 248
+        width: 148
+        height: 116
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -74, y: 58}
+        - {x: -74, y: -58}
+        - {x: 74, y: -58}
+        - {x: 74, y: 58}
     outline: []
   spritePackingTag: 
   userData: 
