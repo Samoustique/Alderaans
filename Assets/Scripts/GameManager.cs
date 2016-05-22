@@ -9,7 +9,7 @@ using System.Text;
 using System;
 
 public class GameManager : MonoBehaviour {
-	public static int gold = 680;
+	public static int gold = 500;
 	public static int life = 5;
 	public static List<GameObject> mobsAlive = new List<GameObject>();
 	public static Step step;
@@ -366,7 +366,7 @@ public class GameManager : MonoBehaviour {
 
 	private void UpdateGold()
 	{
-		txtGold.text = "Credits : " + gold;
+		txtGold.text = "Credits :   " + gold;
 	}
 
 	private void UpdateTowerSelection()
@@ -431,12 +431,12 @@ public class GameManager : MonoBehaviour {
 		Bullet bullet = tower.bullet.GetComponent<Bullet>() as Bullet;
 		GameObject towerSelectedDetails = GameObject.Find("TowerSelected");
 		towerSelectedDetails.GetComponent<Image>().enabled = true;
-		SphereCollider sphereColl = towerToSelect.GetComponentInChildren<SphereCollider>() as SphereCollider;
+		//SphereCollider sphereColl = towerToSelect.GetComponentInChildren<SphereCollider>() as SphereCollider;
 		DisplayTowerCharacteristic("Name", tower.title);
 		DisplayTowerCharacteristic("Lvl", "lvl" + tower.level);
 		DisplayTowerCharacteristic("Dmg", "Dmg\n" + bullet.damage);
-		DisplayTowerCharacteristic("Rng", "Rng\n" + sphereColl.radius);
-		DisplayTowerCharacteristic("Rhy", "Rhy\n" + (2 - tower.rhythm));
+		DisplayTowerCharacteristic("Rng", "Rng\n" + tower.range);
+		DisplayTowerCharacteristic("Rhy", "Spe\n" + (2 - tower.rhythm));
 		DisplayTowerCharacteristic("Sell", "Sell\n+" + tower.sellingPrice);
 		GameObject.Find("btnSell").GetComponent<Image>().enabled = true;
 

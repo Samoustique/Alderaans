@@ -14,6 +14,7 @@ abstract public class Tower : MonoBehaviour {
 	public string title;
 	public int level;
 	public int sellingPrice;
+	public int range;
 	public GameObject towerUp;
 	
     private GameObject focusedMob;

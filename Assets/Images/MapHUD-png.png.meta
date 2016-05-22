@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: 2e1abe44da8738b438509608b16cb249
-timeCreated: 1463401388
+timeCreated: 1463601704
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -24,6 +24,8 @@ TextureImporter:
     21300034: "LogoEmp\xEEre"
     21300036: BtnStartGame
     21300038: BtnMainMenu
+    21300040: Credit
+    21300042: Credits white
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -520,6 +522,42 @@ TextureImporter:
         - {x: -74, y: -58}
         - {x: 74, y: -58}
         - {x: 74, y: 58}
+    - name: Credit
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 637
+        width: 62
+        height: 107
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -30, y: 53.5}
+        - {x: -30, y: -53.5}
+        - {x: 0, y: -53.5}
+        - {x: 1, y: -52.5}
+        - {x: 30, y: 21.5}
+        - {x: 30, y: 44.5}
+        - {x: 6, y: 53.5}
+    - name: Credits white
+      rect:
+        serializedVersion: 2
+        x: 472
+        y: 636
+        width: 61
+        height: 108
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline:
+      - - {x: -28.5, y: 54}
+        - {x: -30.5, y: 52}
+        - {x: -30.5, y: -53}
+        - {x: -2.5, y: -53}
+        - {x: 29.5, y: 23}
+        - {x: 29.5, y: 39}
+        - {x: -0.5, y: 54}
     outline: []
   spritePackingTag: 
   userData: 
