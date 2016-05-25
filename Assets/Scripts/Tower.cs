@@ -53,10 +53,14 @@ abstract public class Tower : MonoBehaviour {
         if (col.gameObject.tag == "Mob")
         {
             GameObject mobOut = col.gameObject.transform.gameObject;
-            if (mobOut != focusedMob)
-            {
-                targetsStack.Remove(mobOut);
-            }
+			if (mobOut != focusedMob)
+			{
+				targetsStack.Remove (mobOut);
+			}
+			else
+			{
+				focusedMob = null;
+			}
             nextTarget();
         }
     }
@@ -70,6 +74,7 @@ abstract public class Tower : MonoBehaviour {
             if (nextTarget != null)
             {
                 focusedMob = nextTarget;
+				targetsStack.Remove (nextTarget);
                 _rhythm = rhythm;
             }
         }
@@ -92,7 +97,8 @@ abstract public class Tower : MonoBehaviour {
     {
 		if (isShootingAllowed)
 		{
-			if (focusedMob != null) {
+			if (focusedMob != null)
+			{
 				// Smoke
 				ManageSmoke ();
 
@@ -106,7 +112,9 @@ abstract public class Tower : MonoBehaviour {
 					Fire (target);
 					_rhythm = rhythm;
 				}
-			} else {
+			}
+			else
+			{
 				nextTarget ();
 			}
 		}
