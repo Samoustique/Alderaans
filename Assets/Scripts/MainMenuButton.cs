@@ -10,6 +10,8 @@ public class MainMenuButton : MonoBehaviour {
 	private Transform menuPositionTransform;
 	private GameObject refCam;
 
+	public AudioClip audioClip;
+
 	public void Start()
 	{
 		mainCamera = GameObject.Find ("Main Camera");
@@ -20,6 +22,7 @@ public class MainMenuButton : MonoBehaviour {
 
 	public void LoadLevel()
 	{
+		GameObject.Find("Main Camera").GetComponent<AudioSource>().PlayOneShot(audioClip);
 		SceneManager.LoadScene ("towerDefense");
 	}
 

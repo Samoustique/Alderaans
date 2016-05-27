@@ -15,7 +15,7 @@ public class GameManager : MonoBehaviour {
 	public static Step step;
 
 	public GameObject topCamObject;
-	public AudioClip sellingSound;
+	public AudioClip sellingSound, bigExplosion;
 	public Text txtGold, txtLife;
 	public GameObject panelTimerConstruction;
 	public Button btnNextWave;
@@ -40,7 +40,6 @@ public class GameManager : MonoBehaviour {
 	private Dictionary<TglTower, Tower> choiceTowers;
 	private GameObject title, smallTitle, timerConstruction, nextWave;
 	private float startTimer, titleTimer, spawnTimer, constructionTimer, spawnLaps, shakeTimer, shakeAmount;
-	//private int nbSpawnInARound;
 	private int nbRound = 1;
 	private bool showTitleText;
 	private Spawn spawner;
@@ -137,17 +136,23 @@ public class GameManager : MonoBehaviour {
 			}
 			if (step != Step.GAME_OVER)
 			{
-				StopNavMeshAgents ();
-				StopTurretsShooting ();
+				EndOfGame ("Game Over");
 				Instantiate (particles, home.transform.position, Quaternion.identity);
+				GetComponent<AudioSource>().PlayOneShot(bigExplosion);
 				Destroy (home);
-				ShowGameOver ();
-				step = Step.GAME_OVER;
 			}
 		}
 	}
 
-	void ShowGameOver ()
+	void EndOfGame(String text)
+	{
+		StopNavMeshAgents ();
+		StopTurretsShooting ();
+		ShowGameOver (text);
+		step = Step.GAME_OVER;
+	}
+
+	void ShowGameOver (String text)
 	{
 		foreach (GameObject ui in GameObject.FindGameObjectsWithTag("UI"))
 		{
@@ -159,6 +164,8 @@ public class GameManager : MonoBehaviour {
 		}
 
 		gameOver.SetActive (true);
+		Text t = gameOver.GetComponentInChildren<Text> ();
+		t.text = text;
 	}
 
 	void StopTurretsShooting ()
@@ -269,7 +276,6 @@ public class GameManager : MonoBehaviour {
 		nextWave.SetActive(false);
 		step = Step.ROUND_TITLE;
 		titleTimer = Time.time;
-		//nbSpawnInARound = 0;
 		DisableChoices();
 	}
 
@@ -301,17 +307,28 @@ public class GameManager : MonoBehaviour {
 		{
 			if (GameManager.mobsAlive.Count == 0)
 			{
-				titleTimer = Time.time;
-				nbRound++;
-				step = Step.CONSTRUCTION_TITLE;
-				//animator.Play("CameraReturnAnim", -1, 0F);
+				if (Spawn.mobsPerRound.Count == nbRound)
+				{
+					if (!animator.GetCurrentAnimatorStateInfo (0).IsName ("CameraGameOverAnim"))
+					{
+						animator.Rebind ();
+						animator.Play("CameraGameOverAnim", -1, 0F);
+					}
+					EndOfGame ("Victory !");
+				}
+				else
+				{
+					titleTimer = Time.time;
+					nbRound++;
+					step = Step.CONSTRUCTION_TITLE;
+					//animator.Play("CameraReturnAnim", -1, 0F);
+				}
 			}
 		}
 		else
 		{
 			if (Time.time > spawnTimer + spawnLaps)
 			{
-				//nbSpawnInARound++;
 				spawner.SpawnMob(nbRound);
 				spawnTimer = Time.time;
 				spawnLaps = UnityEngine.Random.Range(0.2F, 3F);
